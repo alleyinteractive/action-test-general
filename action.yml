@@ -1,0 +1,26 @@
+name: 'Run General filesystem tests'
+description: 'Run basic filesystem checks'
+branding:
+  icon: 'package'
+  color: 'blue'
+
+runs:
+  using: 'composite'
+  steps:
+      - name: Check for gitignored files
+        if: inputs.check-gitignore
+        shell: bash
+        run: |
+          if [[ ! -z $(git ls-files -i --exclude-standard) ]]; then
+            echo "Gitignored files found."
+            exit 1
+          fi
+
+      - name: Check for git conflicts
+        if: inputs.check-git-conflict
+        shell: bash
+        run: |
+          if [[ ! -z $(git grep -E "<<<<<<< |>>>>>>> " -- './*' ':!buddy.yml' ':!.buddy/*') ]]; then
+            echo "Git conflict found."
+            exit 1
+          fi
