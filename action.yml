@@ -3,6 +3,15 @@ description: 'Run basic filesystem checks'
 branding:
   icon: 'package'
   color: 'blue'
+inputs:
+  check-gitignore:
+    description: 'Checks the code for files that should be ignored via .gitignore'
+    required: false
+    default: true
+  check-git-conflict:
+    description: 'Checks the code for git conflicts'
+    required: false
+    default: true
 
 runs:
   using: 'composite'
@@ -11,7 +20,7 @@ runs:
         if: inputs.check-gitignore
         shell: bash
         run: |
-          if [[ ! -z $(git ls-files -i --exclude-standard) ]]; then
+          if [[ ! -z $(git ls-files -ci --exclude-standard) ]]; then
             echo "Gitignored files found."
             exit 1
           fi
