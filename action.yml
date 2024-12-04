@@ -35,7 +35,7 @@ runs:
         if: inputs.check-git-conflict != 'false'
         shell: bash
         run: |
-          CONFLICTS=$(git grep -l -E "<<<<<<< |>>>>>>> " -- './*' ${{ inputs.conflict-files }})
+          CONFLICTS=$(git grep -l -E "<<<<<<< |>>>>>>> " -- './*' ${{ inputs.conflict-files }} || true)
           if [[ ! -z "$CONFLICTS" ]]; then
             echo "Git conflicts found in:" >&2
             echo "$CONFLICTS" >&2
