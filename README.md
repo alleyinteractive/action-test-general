@@ -29,9 +29,31 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Run general tests
-      uses: alleyinteractive/action-test-general@v1
+      uses: alleyinteractive/action-test-general@develop
 
 ```
+
+## Inputs
+
+> Specify using `with` keyword.
+
+### `check-gitignore`
+
+- (Optional) Check the code for files that should be ignored via .gitignore
+- Accepts a string (boolean).
+- Defaults to `'true'`.
+
+### `check-git-conflict`
+
+- (Optional) Checks the code for git conflicts
+- Accepts a string (boolean).
+- Defaults to `'true'`.
+
+### `git-conflict-grep-options`
+
+- (Optional) Additional string passed to git grep when checking for conflict markers
+- Accepts a string.
+- Defaults to `"':!buddy.yml' ':!.buddy/*'"`
 
 
 ## Changelog
@@ -44,7 +66,6 @@ recently.
 This project is actively maintained by [Alley
 Interactive](https://github.com/alleyinteractive).
 
-- [Ben Bolton](https://github.com/benpbolton)
 - [All Contributors](../../contributors)
 
 ## License
