@@ -20,8 +20,10 @@ runs:
         if: inputs.check-gitignore
         shell: bash
         run: |
-          if [[ ! -z $(git ls-files -ci --exclude-standard) ]]; then
-            echo "Gitignored files found."
+          ignored_files=$(git ls-files -ci --exclude-standard)
+          if [[ -n "$ignored_files" ]]; then
+            echo "The following Gitignored files were found:"
+            echo "$ignored_files"
             exit 1
           fi
 
