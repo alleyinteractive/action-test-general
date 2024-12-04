@@ -20,8 +20,10 @@ runs:
         if: inputs.check-gitignore
         shell: bash
         run: |
-          if [[ ! -z $(git ls-files -ci --exclude-standard) ]]; then
-            echo "Gitignored files found."
+          IGNORED_FILES=$(git ls-files -ci --exclude-standard)
+          if [[ ! -z "$IGNORED_FILES" ]]; then
+            echo "Gitignored files found:" >&2
+            echo "$IGNORED_FILES" >&2
             exit 1
           fi
 
@@ -29,7 +31,10 @@ runs:
         if: inputs.check-git-conflict
         shell: bash
         run: |
-          if [[ ! -z $(git grep -E "<<<<<<< |>>>>>>> " -- './*' ':!buddy.yml' ':!.buddy/*') ]]; then
-            echo "Git conflict found."
+          CONFLICTS=$(git grep -l -E "<<<<<<< |>>>>>>> " -- './*' ':!buddy.yml' ':!.buddy/*')
+          if [[ ! -z "$CONFLICTS" ]]; then
+            echo "Git conflicts found in:" >&2
+            echo "$CONFLICTS" >&2
+            echo "Review these files and resolve conflicts before committing." >&2
             exit 1
           fi
