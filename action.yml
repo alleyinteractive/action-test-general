@@ -7,17 +7,21 @@ inputs:
   check-gitignore:
     description: 'Checks the code for files that should be ignored via .gitignore'
     required: false
-    default: true
+    default: 'true'
   check-git-conflict:
     description: 'Checks the code for git conflicts'
     required: false
-    default: true
+    default: 'true'
+  git-conflict-grep-options:
+    description: 'Optional additional string passed to git grep when checking for conflict markers'
+    required: false
+    default: "':!buddy.yml' ':!.buddy/*'"
 
 runs:
   using: 'composite'
   steps:
       - name: Check for gitignored files
-        if: inputs.check-gitignore
+        if: inputs.check-gitignore != 'false'
         shell: bash
         run: |
           IGNORED_FILES=$(git ls-files -ci --exclude-standard)
@@ -28,10 +32,10 @@ runs:
           fi
 
       - name: Check for git conflicts
-        if: inputs.check-git-conflict
+        if: inputs.check-git-conflict != 'false'
         shell: bash
         run: |
-          CONFLICTS=$(git grep -l -E "<<<<<<< |>>>>>>> " -- './*' ':!buddy.yml' ':!.buddy/*')
+          CONFLICTS=$(git grep -l -E "<<<<<<< |>>>>>>> " -- './*' ${{ inputs.git-conflict-grep-options }} || true)
           if [[ ! -z "$CONFLICTS" ]]; then
             echo "Git conflicts found in:" >&2
             echo "$CONFLICTS" >&2
