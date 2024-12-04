@@ -12,8 +12,8 @@ inputs:
     description: 'Checks the code for git conflicts'
     required: false
     default: 'true'
-  conflict-files:
-    description: 'Additional files to check/ignore for git conflicts'
+  git-conflict-grep-options:
+    description: 'Optional additional string passed to git grep when checking for conflict markers'
     required: false
     default: "':!buddy.yml' ':!.buddy/*'"
 
@@ -35,7 +35,7 @@ runs:
         if: inputs.check-git-conflict != 'false'
         shell: bash
         run: |
-          CONFLICTS=$(git grep -l -E "<<<<<<< |>>>>>>> " -- './*' ${{ inputs.conflict-files }} || true)
+          CONFLICTS=$(git grep -l -E "<<<<<<< |>>>>>>> " -- './*' ${{ inputs.git-conflict-grep-options }} || true)
           if [[ ! -z "$CONFLICTS" ]]; then
             echo "Git conflicts found in:" >&2
             echo "$CONFLICTS" >&2
